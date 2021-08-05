@@ -1,0 +1,17 @@
+<?php
+
+namespace {namespace};
+
+use Codememory\Components\Database\Orm\Repository\AbstractEntityRepository;
+
+/**
+ * Class {repositoryName}{repositorySuffix}
+ *
+ * @package {namespace}
+ */
+class {repositoryName}{repositorySuffix} extends AbstractEntityRepository
+{
+
+
+
+}

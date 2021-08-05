@@ -1,0 +1,11 @@
+{
+  "orm": {
+    "pathWithEntities": "App\/Entity",
+    "entityNamespace": "App\\Entity\\",
+    "pathWithRepositories": "app\/Repositories",
+    "repositoryNamespace": "App\\Repositories\\",
+    "entitySuffix": "Entity",
+    "repositorySuffix": "Repository",
+    "configName": "database"
+  }
+}

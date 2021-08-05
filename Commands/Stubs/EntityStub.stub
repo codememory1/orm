@@ -1,0 +1,18 @@
+<?php
+
+namespace {namespace};
+
+use Codememory\Components\Database\Orm\Constructions as ORM;
+
+/**
+ * Class {entityName}{entitySuffix}
+ *
+ * @package {namespace}
+ */
+{entityAttributes}
+class {entityName}{entitySuffix}
+{
+
+{entityBody}
+
+}
