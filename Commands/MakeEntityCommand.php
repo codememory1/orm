@@ -442,7 +442,7 @@ class MakeEntityCommand extends Command
     private function getEntityStub(FileInterface $filesystem): string
     {
 
-        return file_get_contents($filesystem->getRealPath('./Commands/Stubs/EntityStub.stub'));
+        return file_get_contents($filesystem->getRealPath('vendor/codememory/orm/Commands/Stubs/EntityStub.stub'));
 
     }
 
@@ -454,7 +454,7 @@ class MakeEntityCommand extends Command
     private function getRepositoryStub(FileInterface $filesystem): string
     {
 
-        return file_get_contents($filesystem->getRealPath('./Commands/Stubs/RepositoryStub.stub'));
+        return file_get_contents($filesystem->getRealPath('vendor/codememory/orm/Commands/Stubs/RepositoryStub.stub'));
 
     }
 
