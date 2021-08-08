@@ -50,7 +50,7 @@ abstract class AbstractBuilder
     {
 
         $this->connector = $connector;
-        $this->entity = $entity;
+        $this->entity = is_string($entity) ? new $entity() : $entity;
         $this->entityData = new EntityData($this->entity);
 
         if (!$this->entityData->isEntity()) {
