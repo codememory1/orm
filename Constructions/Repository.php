@@ -21,8 +21,7 @@ final class Repository
      * @param string $repository
      */
     public function __construct(
-        public string $repository,
-        public ?string $n = null
+        public string $repository
     )
     {
     }
