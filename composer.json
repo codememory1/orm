@@ -13,7 +13,7 @@
         "ext-pdo": "*",
         "codememory/attributes": "^2.0",
         "codememory/caching": "^1.1",
-        "codememory/config": "^1.1",
+        "codememory/config": "2.0",
         "codememory/console": "^1.0",
         "codememory/database-connection": "^1.0",
         "codememory/database-schema": "^2.0",
