@@ -512,7 +512,7 @@ class MakeEntityCommand extends Command
 
         if (null !== $column['default']) {
             $attributes[] = $this->generateAttribute('ORM\DefaultValue', [
-                'value' => $column['value']
+                'value' => $column['default']
             ]);
         }
 
