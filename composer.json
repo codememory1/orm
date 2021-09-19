@@ -16,7 +16,7 @@
         "codememory/config": "2.0",
         "codememory/console": "^1.0",
         "codememory/database-connection": "^1.0",
-        "codememory/database-schema": "^2.0",
+        "codememory/database-schema": "^2.0.1",
         "codememory/finder": "^1.1",
         "codememory/fs": "^1.1",
         "codememory/global-config": "^1.1",
