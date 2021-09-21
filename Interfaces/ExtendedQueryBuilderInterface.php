@@ -3,6 +3,7 @@
 namespace Codememory\Components\Database\Orm\Interfaces;
 
 use ArrayIterator;
+use Codememory\Components\Database\QueryBuilder\Interfaces\QueryResultInterface;
 use Generator;
 
 /**
@@ -12,7 +13,7 @@ use Generator;
  *
  * @author  Codememory
  */
-interface ExtendedQueryBuilderInterface
+interface ExtendedQueryBuilderInterface extends QueryResultInterface
 {
 
     /**
@@ -22,7 +23,7 @@ interface ExtendedQueryBuilderInterface
      *
      * @return array
      */
-    public function getResultAsEntity(): array;
+    public function toEntity(): array;
 
     /**
      * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
