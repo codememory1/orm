@@ -66,13 +66,37 @@ class ExtendedQueryBuilder extends QueryBuilder implements ExtendedQueryBuilderI
      * @throws QueryNotGeneratedException
      * @throws ReflectionException
      */
-    public function getResultAsEntity(): array
+    public function toEntity(): array
     {
 
         $records = $this->getResult()->toArray();
         $resultAsEntity = new ResultAsEntity($this->entity, $this->entityData, $records);
 
         return $resultAsEntity->getResult();
+
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSelectedStatementException
+     * @throws QueryNotGeneratedException
+     */
+    public function toArray(): array
+    {
+
+        return $this->generateQuery()->getResult()->toArray();
+
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSelectedStatementException
+     * @throws QueryNotGeneratedException
+     */
+    public function toObject(): array
+    {
+
+        return $this->generateQuery()->getResult()->toObject();
 
     }
 
