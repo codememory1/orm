@@ -57,12 +57,23 @@ final class Flush
         $schema = new Schema();
 
         foreach ($this->getTablesWithRecords() as $tableName => $tableWithRecords) {
+            foreach ($tableWithRecords['records'] as $recordIndex => $recordValues) {
+                foreach ($recordValues as $columnName => $recordData) {
+                    if (null === $recordData['value']) {
+                        unset($tableWithRecords['columns'][$columnName]);
+                        unset($tableWithRecords['records'][$recordIndex][$columnName]);
+                    }
+                }
+            }
+
             $schema->insert()
                 ->table($tableName)
                 ->columns(...$tableWithRecords['columns'])
                 ->records(...$this->getRecordValues($tableWithRecords));
 
-            $this->connector->getConnection()->prepare($schema->__toString())->execute($this->getRecordParameters($tableWithRecords));
+            $this->connector->getConnection()
+                ->prepare($schema->__toString())
+                ->execute($this->getRecordParameters($tableWithRecords));
         }
 
     }
@@ -115,7 +126,10 @@ final class Flush
             $columnName = $property->getName();
 
             $tablesWithRecords[$tableName]['columns'][$columnName] = $columnName;
-            $records[Str::random(10)] = $property->getValue($commit);
+            $records[$columnName] = [
+                'hash'  => Str::random(10),
+                'value' => $property->getValue($commit)
+            ];
         }
 
         return $records;
@@ -131,8 +145,8 @@ final class Flush
     {
 
         return array_map(function (array $record) {
-            return array_map(function (string $key) {
-                return sprintf(':%s', $key);
+            return array_map(function (string $key) use ($record) {
+                return sprintf(':%s', $record[$key]['hash']);
             }, array_keys($record));
         }, $tableWithRecords['records']);
 
@@ -150,7 +164,7 @@ final class Flush
 
         foreach ($tableWithRecords['records'] as $record) {
             foreach ($record as $key => $value) {
-                $parameters[$key] = $value;
+                $parameters[$value['hash']] = $value['value'];
             }
         }
 
