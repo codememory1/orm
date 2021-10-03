@@ -72,7 +72,7 @@ class ExtendedQueryBuilder extends QueryBuilder implements ExtendedQueryBuilderI
 
         $entity = $entity ?: $this->entity;
         $entityData = null !== $entity ? new EntityData($entity) : $this->entityData;
-        $records = false !== $records ? $this->getResult()->toArray() : $records;
+        $records = false === $records ? $this->getResult()->toArray() : $records;
 
         return (new ResultAsEntity($entity, $entityData, $records))->getResult();
 
