@@ -4,6 +4,7 @@ namespace Codememory\Components\Database\Orm\QueryBuilder;
 
 use ArrayIterator;
 use Codememory\Components\Database\Connection\Interfaces\ConnectorInterface;
+use Codememory\Components\Database\Orm\EntityData;
 use Codememory\Components\Database\Orm\Interfaces\EntityDataInterface;
 use Codememory\Components\Database\Orm\Interfaces\ExtendedQueryBuilderInterface;
 use Codememory\Components\Database\QueryBuilder\Exceptions\NotSelectedStatementException;
@@ -66,13 +67,14 @@ class ExtendedQueryBuilder extends QueryBuilder implements ExtendedQueryBuilderI
      * @throws QueryNotGeneratedException
      * @throws ReflectionException
      */
-    public function toEntity(): array
+    public function toEntity(?object $entity = null, bool|array $records = false): array
     {
 
-        $records = $this->getResult()->toArray();
-        $resultAsEntity = new ResultAsEntity($this->entity, $this->entityData, $records);
+        $entity = $entity ?: $this->entity;
+        $entityData = null !== $entity ? new EntityData($entity) : $this->entityData;
+        $records = false !== $records ? $this->getResult()->toArray() : $records;
 
-        return $resultAsEntity->getResult();
+        return (new ResultAsEntity($entity, $entityData, $records))->getResult();
 
     }
 

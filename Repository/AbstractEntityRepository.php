@@ -2,6 +2,7 @@
 
 namespace Codememory\Components\Database\Orm\Repository;
 
+use Codememory\Components\Database\Orm\EntityData;
 use Codememory\Components\Database\Orm\Interfaces\EntityDataInterface;
 use Codememory\Components\Database\Orm\Interfaces\EntityRepositoryInterface;
 use Codememory\Components\Database\Orm\QueryBuilder\ExtendedQueryBuilder;
@@ -19,6 +20,8 @@ use ReflectionException;
  */
 abstract class AbstractEntityRepository implements EntityRepositoryInterface
 {
+
+    use BasicBuildersTrait;
 
     /**
      * @var ExtendedQueryBuilder
@@ -46,7 +49,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
 
     /**
      * @inheritDoc
-     * @return array
+     * @return Generator
      * @throws NotSelectedStatementException
      * @throws QueryNotGeneratedException
      * @throws ReflectionException
@@ -55,11 +58,12 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     {
 
         $qb = $this->createQueryBuilder();
-        $qb
-            ->select()
-            ->from($this->getEntityData()->getTableName());
 
-        return $qb->generateQuery()->generator($qb->getResultAsEntity());
+        $qb->select()->from($this->getEntityData()->getTableName());
+
+        $qbClone = clone $qb;
+
+        return $qb->generateQuery()->generator($qbClone->generateQuery()->getResult()->toArray());
 
     }
 
@@ -82,10 +86,17 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      * Returns the data object of the current entity
      * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
      *
+     * @param string|object|null $entity
+     *
      * @return EntityDataInterface
+     * @throws ReflectionException
      */
-    protected function getEntityData(): EntityDataInterface
+    protected function getEntityData(string|object|null $entity = null): EntityDataInterface
     {
+
+        if (null !== $entity) {
+            return new EntityData($entity);
+        }
 
         return $this->entityData;
 

@@ -21,9 +21,12 @@ interface ExtendedQueryBuilderInterface extends QueryResultInterface
      * Returns an array of records as an entity
      * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
      *
+     * @param object|null $entity
+     * @param bool|array  $records
+     *
      * @return array
      */
-    public function toEntity(): array;
+    public function toEntity(?object $entity = null, bool|array $records = false): array;
 
     /**
      * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
