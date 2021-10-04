@@ -4,6 +4,7 @@ namespace Codememory\Components\Database\Orm\Repository;
 
 use Codememory\Components\Database\Orm\EntityData;
 use Codememory\Components\Database\Orm\Interfaces\EntityDataInterface;
+use Codememory\Components\Database\Orm\Interfaces\EntityManagerInterface;
 use Codememory\Components\Database\Orm\Interfaces\EntityRepositoryInterface;
 use Codememory\Components\Database\Orm\QueryBuilder\ExtendedQueryBuilder;
 use Codememory\Components\Database\QueryBuilder\Exceptions\NotSelectedStatementException;
@@ -24,6 +25,11 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     use BasicBuildersTrait;
 
     /**
+     * @var EntityManagerInterface
+     */
+    protected EntityManagerInterface $entityManager;
+
+    /**
      * @var ExtendedQueryBuilder
      */
     private ExtendedQueryBuilder $queryBuilder;
@@ -36,12 +42,14 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     /**
      * AbstractEntityRepository constructor.
      *
-     * @param ExtendedQueryBuilder $queryBuilder
-     * @param EntityDataInterface  $entityData
+     * @param EntityManagerInterface $entityManager
+     * @param ExtendedQueryBuilder   $queryBuilder
+     * @param EntityDataInterface    $entityData
      */
-    public function __construct(ExtendedQueryBuilder $queryBuilder, EntityDataInterface $entityData)
+    public function __construct(EntityManagerInterface $entityManager, ExtendedQueryBuilder $queryBuilder, EntityDataInterface $entityData)
     {
 
+        $this->entityManager = $entityManager;
         $this->queryBuilder = $queryBuilder;
         $this->entityData = $entityData;
 
@@ -99,6 +107,22 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         }
 
         return $this->entityData;
+
+    }
+
+    /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * Returns the repository of the entity
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     * 
+     * @param string $entity
+     *
+     * @return EntityRepositoryInterface
+     */
+    protected function getRepository(string $entity): EntityRepositoryInterface
+    {
+
+        return $this->entityManager->getRepository($entity);
 
     }
 

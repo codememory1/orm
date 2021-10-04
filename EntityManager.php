@@ -93,7 +93,7 @@ class EntityManager implements EntityManagerInterface
         $namespaceRepository = $entityData->getNamespaceRepository();
         $queryBuilder = new ExtendedQueryBuilder($this->connector, $entityToObject, $entityData);
 
-        return new $namespaceRepository($queryBuilder, $entityData);
+        return new $namespaceRepository($this, $queryBuilder, $entityData);
 
     }
 
