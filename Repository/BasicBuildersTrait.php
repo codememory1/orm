@@ -130,6 +130,7 @@ trait BasicBuildersTrait
      * @return int
      * @throws NotSelectedStatementException
      * @throws QueryNotGeneratedException
+     * @throws ReflectionException
      */
     public function getCount(array $by = [], string $expr = 'and'): int
     {
@@ -138,13 +139,92 @@ trait BasicBuildersTrait
         $expr = sprintf('expr%s', ucfirst($expr));
         $statement = $qb
             ->customSelect()
-            ->columns(['count' => 'COUNT(*)'])->from('users');
+            ->columns(['count' => 'COUNT(*)'])->from($this->getEntityData()->getTableName());
 
         if ([] !== $by) {
             $statement->where($qb->expression()->$expr(
                 ...$this->getCollectedConditions($by, $qb)
             ));
         }
+
+        return $qb->generateQuery()->getResult()->toArray()[0]['count'];
+
+    }
+
+    /**
+     * @param string $column
+     *
+     * @return int
+     * @throws NotSelectedStatementException
+     * @throws QueryNotGeneratedException
+     * @throws ReflectionException
+     */
+    public function getMin(string $column): int
+    {
+
+        return $this->getExtremum('max', $column);
+
+    }
+
+    /**
+     * @param string $column
+     *
+     * @return int
+     * @throws NotSelectedStatementException
+     * @throws QueryNotGeneratedException
+     * @throws ReflectionException
+     */
+    public function getMax(string $column): int
+    {
+
+        return $this->getExtremum('max', $column);
+
+    }
+
+    /**
+     * @return int
+     * @throws NotSelectedStatementException
+     * @throws QueryNotGeneratedException
+     * @throws ReflectionException
+     */
+    public function getMinId(): int
+    {
+
+        return $this->getMin('id');
+
+    }
+
+    /**
+     * @return int
+     * @throws NotSelectedStatementException
+     * @throws QueryNotGeneratedException
+     * @throws ReflectionException
+     */
+    public function getMaxId(): int
+    {
+
+        return $this->getMax('id');
+
+    }
+
+    /**
+     * @param string $func
+     * @param string $column
+     *
+     * @return int
+     * @throws NotSelectedStatementException
+     * @throws QueryNotGeneratedException
+     * @throws ReflectionException
+     */
+    public function getExtremum(string $func, string $column): int
+    {
+
+        $fullFunction = sprintf('%s(%s)', ucfirst($func), $column);
+
+        $qb = $this->createQueryBuilder();
+        $qb
+            ->customSelect()
+            ->columns(['num' => $fullFunction])->from($this->getEntityData()->getTableName());
 
         return $qb->generateQuery()->getResult()->toArray()[0]['count'];
 
