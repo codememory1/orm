@@ -18,15 +18,15 @@ final class Column
     /**
      * Column constructor.
      *
-     * @param string   $name
-     * @param string   $type
-     * @param int|null $length
-     * @param bool     $nullable
+     * @param string         $name
+     * @param string         $type
+     * @param int|array|null $length
+     * @param bool           $nullable
      */
     public function __construct(
         public string $name,
         public string $type,
-        public ?int   $length = null,
+        public int|array|null   $length = null,
         public bool   $nullable = false
     )
     {

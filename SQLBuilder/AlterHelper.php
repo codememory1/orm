@@ -224,9 +224,13 @@ class AlterHelper
         $columnType = $columnArguments['type'];
 
         /** @var ColumnDefinitionInterface $columnCreated */
-        $columnCreated = $columnSchema
-            ->setColumnName($columnArguments['name'])
-            ->$columnType($columnArguments['length']);
+        $columnCreated = $columnSchema->setColumnName($columnArguments['name']);
+
+        if(is_array($columnArguments['length'])) {
+            $columnCreated->$columnType(...$columnArguments['length']);
+        } else {
+            $columnType($columnArguments['length']);
+        }
 
         if ($columnArguments['nullable']) {
             $columnCreated->null();
