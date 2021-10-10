@@ -6,6 +6,7 @@ use Codememory\Components\Database\Orm\QueryBuilder\ExtendedQueryBuilder;
 use Codememory\Components\Database\QueryBuilder\Exceptions\NotSelectedStatementException;
 use Codememory\Components\Database\QueryBuilder\Exceptions\QueryNotGeneratedException;
 use Codememory\Components\Database\QueryBuilder\Interfaces\QueryBuilderInterface;
+use Codememory\Components\Database\Schema\Interfaces\SelectInterface;
 use ReflectionException;
 
 /**
@@ -250,6 +251,10 @@ trait BasicBuildersTrait
     }
 
     /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * Searches on a QueryBuilder condition without generating a query
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
      * @param array  $by
      * @param string $expr
      *
@@ -262,13 +267,34 @@ trait BasicBuildersTrait
         $qb = $this->createQueryBuilder();
         $expr = sprintf('expr%s', ucfirst($expr));
 
-        $qb
+        $this->findByWithStatement($qb, $by, $expr);
+
+        return $qb;
+
+    }
+
+    /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * Searches for a condition and returns a statement
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
+     * @param QueryBuilderInterface $queryBuilder
+     * @param array                 $by
+     * @param string                $expr
+     *
+     * @return SelectInterface
+     * @throws ReflectionException
+     */
+    protected function findByWithStatement(QueryBuilderInterface $queryBuilder, array $by, string $expr = 'and'): SelectInterface
+    {
+
+        $expr = sprintf('expr%s', ucfirst($expr));
+
+        return $queryBuilder
             ->setParameters($by)
             ->select()
             ->from($this->getEntityData()->getTableName())
-            ->where($qb->expression()->$expr(...$this->getCollectedConditions($by, $qb)));
-
-        return $qb;
+            ->where($queryBuilder->expression()->$expr(...$this->getCollectedConditions($by, $queryBuilder)));
 
     }
 
