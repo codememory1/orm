@@ -245,6 +245,20 @@ trait BasicBuildersTrait
     protected function findBy(array $by, string $expr = 'and'): ExtendedQueryBuilder
     {
 
+        return $this->findByWithoutGenerate($by, $expr)->generateQuery();
+
+    }
+
+    /**
+     * @param array  $by
+     * @param string $expr
+     *
+     * @return ExtendedQueryBuilder
+     * @throws ReflectionException
+     */
+    protected function findByWithoutGenerate(array $by, string $expr = 'and'): ExtendedQueryBuilder
+    {
+
         $qb = $this->createQueryBuilder();
         $expr = sprintf('expr%s', ucfirst($expr));
 
@@ -254,7 +268,7 @@ trait BasicBuildersTrait
             ->from($this->getEntityData()->getTableName())
             ->where($qb->expression()->$expr(...$this->getCollectedConditions($by, $qb)));
 
-        return $qb->generateQuery();
+        return $qb;
 
     }
 
