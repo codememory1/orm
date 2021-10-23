@@ -9,8 +9,10 @@ use Codememory\Components\Database\Orm\Interfaces\EntityDataInterface;
 use Codememory\Components\Database\Orm\Interfaces\EntityManagerInterface;
 use Codememory\Components\Database\Orm\Interfaces\EntityRepositoryInterface;
 use Codememory\Components\Database\Orm\QueryBuilder\ExtendedQueryBuilder;
+use Codememory\Components\Database\Orm\Repository\DefaultRepository;
 use JetBrains\PhpStorm\Pure;
 use ReflectionException;
+use Codememory\Components\Database\Orm\Repository\AbstractEntityRepository;
 
 /**
  * Class EntityManager
@@ -79,21 +81,22 @@ class EntityManager implements EntityManagerInterface
 
     /**
      * @inheritDoc
-     * @throws ObjectIsNotEntityException
      * @throws ReflectionException
-     * @throws RepositoryEntityNotExistsException
      */
-    public function getRepository(string|object $entity): EntityRepositoryInterface
+    public function getRepository(string|object $entity, ?ExtendedQueryBuilder $queryBuilder = null): AbstractEntityRepository
     {
-
-        $this->isExistEntityRepository($entity);
 
         $entityToObject = is_string($entity) ? new $entity() : $entity;
         $entityData = $this->getEntityData($entityToObject);
-        $namespaceRepository = $entityData->getNamespaceRepository();
-        $queryBuilder = new ExtendedQueryBuilder($this->connector, $entityToObject, $entityData);
+        $queryBuilder = $queryBuilder ?: new ExtendedQueryBuilder($this->connector, $entityToObject, $entityData);
 
-        return new $namespaceRepository($this, $queryBuilder, $entityData);
+        if ($this->getEntityData($entity)->existRepository()) {
+            $namespaceRepository = $entityData->getNamespaceRepository();
+
+            return new $namespaceRepository($this, $queryBuilder, $entityData);
+        }
+
+        return new DefaultRepository($this, $queryBuilder, $entityData);
 
     }
 
