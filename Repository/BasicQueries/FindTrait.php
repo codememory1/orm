@@ -88,6 +88,21 @@ trait FindTrait
     public function customFindBy(array $by, string $expr = 'and'): ResultTo
     {
 
+        return $this->customFindByWithoutGenerate($by, $expr)->generateTo();
+
+    }
+
+    /**
+     * @param array  $by
+     * @param string $expr
+     *
+     * @return ExtendedQueryBuilder
+     * @throws ReflectionException
+     * @throws StatementNotSelectedException
+     */
+    public function customFindByWithoutGenerate(array $by, string $expr = 'and'): ExtendedQueryBuilder
+    {
+
         $qb = $this->createQueryBuilder();
         $expr = sprintf('expr%s', ucfirst($expr));
 
@@ -101,7 +116,7 @@ trait FindTrait
                 )
             );
 
-        return $qb->generateTo();
+        return $qb;
 
     }
 
