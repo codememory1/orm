@@ -227,9 +227,9 @@ class AlterHelper
         $columnCreated = $columnSchema->setColumnName($columnArguments['name']);
 
         if(is_array($columnArguments['length'])) {
-            $columnCreated->$columnType(...$columnArguments['length']);
+            $columnCreated = $columnCreated->$columnType(...$columnArguments['length']);
         } else {
-            $columnType($columnArguments['length']);
+            $columnCreated = $columnCreated->$columnType($columnArguments['length']);
         }
 
         if ($columnArguments['nullable']) {
