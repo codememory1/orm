@@ -10,6 +10,7 @@ use Codememory\Components\Database\Orm\QueryBuilder\ExtendedQueryBuilder;
 use Codememory\Components\Database\Orm\Repository\BasicQueries\CounterTrait;
 use Codememory\Components\Database\Orm\Repository\BasicQueries\ExtremumTrait;
 use Codememory\Components\Database\Orm\Repository\BasicQueries\FindTrait;
+use Codememory\Components\Database\Orm\Repository\BasicQueries\ManipulationTrait;
 use JetBrains\PhpStorm\Pure;
 use ReflectionException;
 
@@ -26,6 +27,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     use FindTrait;
     use ExtremumTrait;
     use CounterTrait;
+    use ManipulationTrait;
 
     /**
      * @var EntityManagerInterface
