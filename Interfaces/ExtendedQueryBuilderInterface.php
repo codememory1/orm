@@ -2,9 +2,7 @@
 
 namespace Codememory\Components\Database\Orm\Interfaces;
 
-use ArrayIterator;
-use Codememory\Components\Database\QueryBuilder\Interfaces\QueryResultInterface;
-use Generator;
+use Codememory\Components\Database\Orm\QueryBuilder\Answer\ResultTo;
 
 /**
  * Interface ExtendedQueryBuilderInterface
@@ -13,41 +11,37 @@ use Generator;
  *
  * @author  Codememory
  */
-interface ExtendedQueryBuilderInterface extends QueryResultInterface
+interface ExtendedQueryBuilderInterface
 {
 
     /**
-     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
-     * Returns an array of records as an entity
-     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
-     *
-     * @param object|null $entity
-     * @param bool|array  $records
-     *
-     * @return array
+     * @return object
      */
-    public function toEntity(?object $entity = null, bool|array $records = false): array;
+    public function getEntity(): object;
 
     /**
-     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
-     * Returns an iterator of records
-     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
-     *
-     * @param array $records
-     *
-     * @return ArrayIterator
+     * @return EntityDataInterface
      */
-    public function iterator(array $records): ArrayIterator;
+    public function getEntityData(): EntityDataInterface;
 
     /**
-     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
-     * Returns the record generator
-     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
-     *
-     * @param array $records
-     *
-     * @return Generator
+     * @return ExtendedQueryBuilderInterface
      */
-    public function generator(array $records): Generator;
+    public function generateResult(): ExtendedQueryBuilderInterface;
+
+    /**
+     * @return ResultTo
+     */
+    public function to(): ResultTo;
+
+    /**
+     * @return ResultTo
+     */
+    public function generateTo(): ResultTo;
+
+    /**
+     * @return bool|array
+     */
+    public function getGeneratedResult(): bool|array;
 
 }

@@ -14,13 +14,5 @@ use Generator;
 interface EntityRepositoryInterface
 {
 
-    /**
-     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
-     * Returns a generator of all records
-     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
-     *
-     * @return Generator
-     */
-    public function findAll(): Generator;
 
 }

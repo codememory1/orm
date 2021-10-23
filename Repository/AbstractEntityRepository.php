@@ -7,9 +7,10 @@ use Codememory\Components\Database\Orm\Interfaces\EntityDataInterface;
 use Codememory\Components\Database\Orm\Interfaces\EntityManagerInterface;
 use Codememory\Components\Database\Orm\Interfaces\EntityRepositoryInterface;
 use Codememory\Components\Database\Orm\QueryBuilder\ExtendedQueryBuilder;
-use Codememory\Components\Database\QueryBuilder\Exceptions\NotSelectedStatementException;
-use Codememory\Components\Database\QueryBuilder\Exceptions\QueryNotGeneratedException;
-use Generator;
+use Codememory\Components\Database\Orm\Repository\BasicQueries\CounterTrait;
+use Codememory\Components\Database\Orm\Repository\BasicQueries\ExtremumTrait;
+use Codememory\Components\Database\Orm\Repository\BasicQueries\FindTrait;
+use JetBrains\PhpStorm\Pure;
 use ReflectionException;
 
 /**
@@ -22,7 +23,9 @@ use ReflectionException;
 abstract class AbstractEntityRepository implements EntityRepositoryInterface
 {
 
-    use BasicBuildersTrait;
+    use FindTrait;
+    use ExtremumTrait;
+    use CounterTrait;
 
     /**
      * @var EntityManagerInterface
@@ -40,12 +43,18 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     private EntityDataInterface $entityData;
 
     /**
+     * @var ConstructionAssistant
+     */
+    private ConstructionAssistant $constructionAssistant;
+
+    /**
      * AbstractEntityRepository constructor.
      *
      * @param EntityManagerInterface $entityManager
      * @param ExtendedQueryBuilder   $queryBuilder
      * @param EntityDataInterface    $entityData
      */
+    #[Pure]
     public function __construct(EntityManagerInterface $entityManager, ExtendedQueryBuilder $queryBuilder, EntityDataInterface $entityData)
     {
 
@@ -53,25 +62,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         $this->queryBuilder = $queryBuilder;
         $this->entityData = $entityData;
 
-    }
-
-    /**
-     * @inheritDoc
-     * @return Generator
-     * @throws NotSelectedStatementException
-     * @throws QueryNotGeneratedException
-     * @throws ReflectionException
-     */
-    public function findAll(): Generator
-    {
-
-        $qb = $this->createQueryBuilder();
-
-        $qb->select()->from($this->getEntityData()->getTableName());
-
-        $qbClone = clone $qb;
-
-        return $qb->generateQuery()->generator($qbClone->generateQuery()->getResult()->toArray());
+        $this->constructionAssistant = new ConstructionAssistant();
 
     }
 
@@ -114,15 +105,16 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
      * Returns the repository of the entity
      * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
-     * 
-     * @param string $entity
      *
-     * @return EntityRepositoryInterface
+     * @param string                    $entity
+     * @param ExtendedQueryBuilder|null $queryBuilder
+     *
+     * @return AbstractEntityRepository
      */
-    protected function getRepository(string $entity): EntityRepositoryInterface
+    protected function getRepository(string $entity, ?ExtendedQueryBuilder $queryBuilder = null): AbstractEntityRepository
     {
 
-        return $this->entityManager->getRepository($entity);
+        return $this->entityManager->getRepository($entity, $queryBuilder);
 
     }
 
