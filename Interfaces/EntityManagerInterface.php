@@ -2,6 +2,9 @@
 
 namespace Codememory\Components\Database\Orm\Interfaces;
 
+use Codememory\Components\Database\Orm\QueryBuilder\ExtendedQueryBuilder;
+use Codememory\Components\Database\Orm\Repository\AbstractEntityRepository;
+
 /**
  * Interface EntityManagerInterface
  *
@@ -40,11 +43,12 @@ interface EntityManagerInterface
      * does not exist, an exception will be thrown
      * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
      *
-     * @param string|object $entity
+     * @param string|object             $entity
+     * @param ExtendedQueryBuilder|null $queryBuilder
      *
-     * @return EntityRepositoryInterface
+     * @return AbstractEntityRepository
      */
-    public function getRepository(string|object $entity): EntityRepositoryInterface;
+    public function getRepository(string|object $entity, ?ExtendedQueryBuilder $queryBuilder = null): AbstractEntityRepository;
 
     /**
      * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
