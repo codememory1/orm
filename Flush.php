@@ -8,7 +8,9 @@ use Codememory\Components\Attributes\Targets\PropertyTarget;
 use Codememory\Components\Database\Connection\Interfaces\ConnectorInterface;
 use Codememory\Components\Database\Orm\Constructions\Column;
 use Codememory\Components\Database\Orm\Constructions\Entity;
+use Codememory\Components\Database\QueryBuilder\Executor;
 use Codememory\Components\Database\Schema\Schema;
+use Codememory\Components\Profiling\Exceptions\BuilderNotCurrentSectionException;
 use Codememory\Support\Str;
 use Exception;
 use ReflectionException;
@@ -50,6 +52,7 @@ final class Flush
     /**
      * @return void
      * @throws ReflectionException
+     * @throws BuilderNotCurrentSectionException
      */
     public function flush(): void
     {
@@ -66,16 +69,29 @@ final class Flush
                 }
             }
 
-            $schema->insert()
-                ->table($tableName)
-                ->columns(...$tableWithRecords['columns'])
-                ->records(...$this->getRecordValues($tableWithRecords));
-
-            $this->connector->getConnection()
-                ->prepare($schema->__toString())
-                ->execute($this->getRecordParameters($tableWithRecords));
+            $this->flushHandler($schema, $tableName, $tableWithRecords);
         }
 
+    }
+
+    /**
+     * @param Schema $schema
+     * @param string $tableName
+     * @param array  $tableWithRecords
+     *
+     * @throws BuilderNotCurrentSectionException
+     */
+    private function flushHandler(Schema $schema, string $tableName, array $tableWithRecords): void
+    {
+
+        $schema->insert()
+            ->table($tableName)
+            ->columns(...$tableWithRecords['columns'])
+            ->records(...$this->getRecordValues($tableWithRecords));
+
+        (new Executor($this->connector, $tableWithRecords['entity']))
+            ->execute($schema->__toString(), $this->getRecordParameters($tableWithRecords));
+        
     }
 
     /**
@@ -97,6 +113,7 @@ final class Flush
             $records = $this->getRecordsOfEntity($attributeAssistant, $tablesWithRecords, $tableName, $commit);
 
             $tablesWithRecords[$tableName]['records'][] = $records;
+            $tablesWithRecords[$tableName]['entity'] = $commit::class;
         }
 
         return $tablesWithRecords;
@@ -163,7 +180,7 @@ final class Flush
         $parameters = [];
 
         foreach ($tableWithRecords['records'] as $record) {
-            foreach ($record as $key => $value) {
+            foreach ($record as $value) {
                 $parameters[$value['hash']] = $value['value'];
             }
         }
