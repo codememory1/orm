@@ -161,9 +161,13 @@ final class Flush
     private function getRecordValues(array $tableWithRecords): array
     {
 
-        return array_map(function (array $record) {
-            return array_map(function (string $key) use ($record) {
-                return sprintf(':%s', $record[$key]['hash']);
+        $uniqueIndex = 0;
+
+        return array_map(function (array $record) use (&$uniqueIndex) {
+            $uniqueIndex++;
+
+            return array_map(function (string $key) use ($record, $uniqueIndex) {
+                return sprintf(':%s_%s', $record[$key]['hash'], $uniqueIndex);
             }, array_keys($record));
         }, $tableWithRecords['records']);
 
@@ -179,8 +183,10 @@ final class Flush
 
         $parameters = [];
 
-        foreach ($tableWithRecords['records'] as $record) {
-            foreach ($record as $value) {
+        foreach ($tableWithRecords['records'] as $index => &$record) {
+            foreach ($record as &$value) {
+                $value['hash'] = sprintf('%s_%s', $value['hash'], ++$index);
+
                 $parameters[$value['hash']] = $value['value'];
             }
         }
