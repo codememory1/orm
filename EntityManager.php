@@ -10,6 +10,7 @@ use Codememory\Components\Database\Orm\Interfaces\EntityManagerInterface;
 use Codememory\Components\Database\Orm\Interfaces\EntityRepositoryInterface;
 use Codememory\Components\Database\Orm\QueryBuilder\ExtendedQueryBuilder;
 use Codememory\Components\Database\Orm\Repository\DefaultRepository;
+use Codememory\Components\Profiling\Exceptions\BuilderNotCurrentSectionException;
 use JetBrains\PhpStorm\Pure;
 use ReflectionException;
 use Codememory\Components\Database\Orm\Repository\AbstractEntityRepository;
@@ -65,7 +66,9 @@ class EntityManager implements EntityManagerInterface
 
     /**
      * @inheritDoc
+     * @return EntityManagerInterface
      * @throws ReflectionException
+     * @throws BuilderNotCurrentSectionException
      */
     public function flush(): EntityManagerInterface
     {
