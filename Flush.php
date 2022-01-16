@@ -185,7 +185,7 @@ final class Flush
 
         foreach ($tableWithRecords['records'] as $index => &$record) {
             foreach ($record as &$value) {
-                $value['hash'] = sprintf('%s_%s', $value['hash'], ++$index);
+                $value['hash'] = sprintf('%s_%s', $value['hash'], $index + 1);
 
                 $parameters[$value['hash']] = $value['value'];
             }
